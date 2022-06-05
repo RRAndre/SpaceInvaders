@@ -6,33 +6,43 @@ import org.academiadecodigo.simplegraphics.keyboard.KeyboardEventType;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardHandler;
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
-import javax.swing.*;
-import java.awt.*;
+import java.util.LinkedList;
 
 public class Spaceship implements KeyboardHandler {
 
     private int health;
     private int damage;
     private Picture spaceship;
-    private Bullet bullet;
+    private LinkedList<Bullet> bulletList;
 
-    public Spaceship(){
-        spaceship = new Picture(10,10, "resources/space.png");
-        spaceship.grow(-50,-50);
+    public Spaceship() {
+        spaceship = new Picture(10, 10, "resources/space.png");
+        spaceship.grow(-50, -50);
+        bulletList = new LinkedList<>();
     }
 
-    public void init(){
+    public void init() {
         spaceship.draw();
         keyboardInit();
     }
 
     //Methods
-    public void shoot(){
-        bullet = new Bullet(spaceship.getMaxX(), middleY());
-        bullet.moveBullet();
+    public void shoot() {
+        bulletList.add(new Bullet(spaceship.getMaxX(), middleY() - 3));
     }
 
-    public int middleY(){
+    public void moveAllBullets() {
+        for (int i = 0; i < bulletList.size(); i++) {
+            if (bulletList.get(i).getPos() > (Background.MAXCOLS - Background.CELLSIZE)) {
+                bulletList.get(i).removeBullet();
+                bulletList.remove(bulletList.get(i));
+            } else {
+                bulletList.get(i).moveBullet();
+            }
+        }
+    }
+
+    public int middleY() {
         return (spaceship.getY() + spaceship.getMaxY()) / 2;
     }
 
@@ -92,27 +102,27 @@ public class Spaceship implements KeyboardHandler {
     @Override
     public void keyPressed(KeyboardEvent keyboardEvent) {
 
-        if( keyboardEvent.getKey() == KeyboardEvent.KEY_LEFT) {
-            if(spaceship.getX() >= Background.PADDING) {
+        if (keyboardEvent.getKey() == KeyboardEvent.KEY_LEFT) {
+            if (spaceship.getX() >= Background.PADDING) {
                 spaceship.translate(-10, 0);
             }
         }
 
-        if(keyboardEvent.getKey() == KeyboardEvent.KEY_RIGHT) {
-            if(spaceship.getMaxX() <= (Background.MAXCOLS/2)) {
+        if (keyboardEvent.getKey() == KeyboardEvent.KEY_RIGHT) {
+            if (spaceship.getMaxX() <= (Background.MAXCOLS / 2)) {
                 spaceship.translate(10, 0);
             }
         }
 
-        if(keyboardEvent.getKey() == KeyboardEvent.KEY_UP) {
+        if (keyboardEvent.getKey() == KeyboardEvent.KEY_UP) {
             if (spaceship.getY() >= Background.PADDING) {
                 spaceship.translate(0, -10);
             }
         }
 
-        if(keyboardEvent.getKey() == KeyboardEvent.KEY_DOWN) {
-            if (spaceship.getMaxY() <= Background.MAXROWS){
-                spaceship.translate(0,10);
+        if (keyboardEvent.getKey() == KeyboardEvent.KEY_DOWN) {
+            if (spaceship.getMaxY() <= Background.MAXROWS) {
+                spaceship.translate(0, 10);
             }
         }
 

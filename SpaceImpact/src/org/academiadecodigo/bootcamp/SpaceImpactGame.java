@@ -15,16 +15,19 @@ public class SpaceImpactGame {
     public void startGame(){
 
         while(true){
-            spaceship.shoot();
 
-           /* try {
+
+            try {
                 spaceship.shoot();
+                spaceship.moveAllBullets();
                 Thread.sleep(200);
 
 
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
-            }*/
+            }
         }
     }
+
+
 }
