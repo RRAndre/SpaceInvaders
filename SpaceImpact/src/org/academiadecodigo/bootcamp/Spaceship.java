@@ -18,6 +18,7 @@ public class Spaceship implements KeyboardHandler {
     public Spaceship() {
         spaceship = new Picture(10, 10, "resources/space.png");
         spaceship.grow(-50, -50);
+        init();
         bulletList = new LinkedList<>();
     }
 
@@ -73,29 +74,13 @@ public class Spaceship implements KeyboardHandler {
         Keyboard keyboard = new Keyboard(this);
 
         //RIGHT KEY
-        KeyboardEvent rightKeyPressed = new KeyboardEvent();
-        rightKeyPressed.setKey(KeyboardEvent.KEY_RIGHT);
-        rightKeyPressed.setKeyboardEventType(KeyboardEventType.KEY_PRESSED);
-        keyboard.addEventListener(rightKeyPressed);
-
-
+        KeyboardSetup.keyboardInit(keyboard, KeyboardEventType.KEY_PRESSED, KeyboardEvent.KEY_RIGHT);
         //LEFT KEY
-        KeyboardEvent leftKeyPressed = new KeyboardEvent();
-        leftKeyPressed.setKey(KeyboardEvent.KEY_LEFT);
-        leftKeyPressed.setKeyboardEventType(KeyboardEventType.KEY_PRESSED);
-        keyboard.addEventListener(leftKeyPressed);
-
+        KeyboardSetup.keyboardInit(keyboard, KeyboardEventType.KEY_PRESSED, KeyboardEvent.KEY_LEFT);
         //UP KEY
-        KeyboardEvent upKeyPressed = new KeyboardEvent();
-        upKeyPressed.setKey(KeyboardEvent.KEY_UP);
-        upKeyPressed.setKeyboardEventType(KeyboardEventType.KEY_PRESSED);
-        keyboard.addEventListener(upKeyPressed);
-
+        KeyboardSetup.keyboardInit(keyboard, KeyboardEventType.KEY_PRESSED, KeyboardEvent.KEY_UP);
         //DOWN KEY
-        KeyboardEvent downKeyPressed = new KeyboardEvent();
-        downKeyPressed.setKey(KeyboardEvent.KEY_DOWN);
-        downKeyPressed.setKeyboardEventType(KeyboardEventType.KEY_PRESSED);
-        keyboard.addEventListener(downKeyPressed);
+        KeyboardSetup.keyboardInit(keyboard, KeyboardEventType.KEY_PRESSED, KeyboardEvent.KEY_DOWN);
     }
 
     //Moves

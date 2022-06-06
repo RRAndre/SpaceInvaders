@@ -15,6 +15,7 @@ public abstract class Enemy implements Destroyable{
     public void killEnemy(){
         //while enemy not dead bullet.move()
     }
+    public void moveEnemy(){}
 
     //Getters
 
