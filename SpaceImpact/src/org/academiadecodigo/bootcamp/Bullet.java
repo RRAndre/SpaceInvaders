@@ -4,6 +4,7 @@ import org.academiadecodigo.simplegraphics.pictures.Picture;
 
 public class Bullet {
         private Picture bullet;
+        public static final int BULLETDAMAGE = 20;
 
         public Bullet(int col, int row) {
             bullet = new Picture(col, row, "resources/bullet.png");

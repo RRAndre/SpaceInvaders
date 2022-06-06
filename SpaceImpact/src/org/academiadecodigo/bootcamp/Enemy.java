@@ -4,17 +4,16 @@ import org.academiadecodigo.simplegraphics.pictures.Picture;
 
 public abstract class Enemy implements Destroyable{
 
+    public int X;
     private int health;
     private int damage;
     private Picture enemy;
-    private boolean dead;
+    private boolean destroyed;
 
     //Methods
 
     public void shoot(){}
-    public void killEnemy(){
-        //while enemy not dead bullet.move()
-    }
+
     public void moveEnemy(){}
 
     //Getters
@@ -27,10 +26,6 @@ public abstract class Enemy implements Destroyable{
         return damage;
     }
 
-    public boolean isDead() {
-        return dead;
-    }
-
     //Setters
 
     public void setHealth(int health) {
@@ -41,7 +36,13 @@ public abstract class Enemy implements Destroyable{
         this.damage = damage;
     }
 
-    public void setDead(boolean dead) {
-        this.dead = dead;
+    public void setDestroyed() { this.destroyed = true; }
+
+
+    @Override
+    public boolean isDestroyed() {
+        return destroyed;
     }
+
+    // update this ------> public int getX();
 }

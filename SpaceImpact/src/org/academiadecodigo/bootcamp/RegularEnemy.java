@@ -12,10 +12,9 @@ public class RegularEnemy extends Enemy {
     }
 
     public void initEnemy() {
-        enemy.grow(-10,-10);
+        enemy.grow(-10, -10);
         enemy.draw();
-
-
+        setHealth(20);
     }
 
     public void removeEnemy() {
@@ -32,7 +31,16 @@ public class RegularEnemy extends Enemy {
     }
 
     //Getters
-    public int enemyGetX() {
+    public int getX() {
         return enemy.getX();
+    }
+
+    @Override
+    public void hit(int damage) {
+        if (getHealth() > 0) {
+            setHealth(getHealth() - damage);
+        } else {
+            setDestroyed();
+        }
     }
 }

@@ -51,5 +51,17 @@ public class SpaceImpactGame {
         }
     }
 
+    public void deleteEnemy() {
+        for (int i = 0; i < enemyList.size(); i++) {
+           // if (enemyList.get(i))
+        }
+    }
+
+   /* public void isShot(){
+        for (int i = 0; i < enemyList.size(); i++) {
+        if (enemyList.get(i).getX() == bulletList.get)
+                enemyList.get(i).hit();
+    }*/
+
 
 }

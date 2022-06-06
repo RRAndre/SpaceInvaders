@@ -11,7 +11,6 @@ import java.util.LinkedList;
 public class Spaceship implements KeyboardHandler {
 
     private int health;
-    private int damage;
     private Picture spaceship;
     private LinkedList<Bullet> bulletList;
 
@@ -53,21 +52,11 @@ public class Spaceship implements KeyboardHandler {
         return health;
     }
 
-    public int getDamage() {
-        return damage;
-    }
-
-
     //Setters
 
     public void setHealth(int health) {
         this.health = health;
     }
-
-    public void setDamage(int damage) {
-        this.damage = damage;
-    }
-
 
     private void keyboardInit() {
 
