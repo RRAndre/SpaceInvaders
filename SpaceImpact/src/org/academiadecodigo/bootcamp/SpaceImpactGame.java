@@ -7,8 +7,6 @@ public class SpaceImpactGame {
     private Spaceship spaceship;
     private InitialMenu menu;
     private Background background;
-    private EnemyFactory factory;
-    private LinkedList<Enemy> enemyList;
 
     public SpaceImpactGame(){
         //Initial menu all fucked up
@@ -16,23 +14,18 @@ public class SpaceImpactGame {
         startGameObjects();
     }
 
-    public void createEnemy(){
-        enemyList.add(factory.newEnemy());
-    }
 
-    public void moveAllEnemies(){
+   /* public void moveAllEnemies(){
         //Method incomplete
         //Use if you want to break the game
         for (int i = 0; i < enemyList.size(); i++) {
             enemyList.get(i).moveEnemy();
         }
-    }
+    }*/
 
     public void startGameObjects(){
         background = new Background();
         spaceship = new Spaceship();
-        enemyList = new LinkedList<>();
-        factory = new EnemyFactory();
     }
     public void startGame(){
 
@@ -41,8 +34,9 @@ public class SpaceImpactGame {
             try {
                 spaceship.shoot();
                 spaceship.moveAllBullets();
-                createEnemy();
-                Thread.sleep(200);
+                spaceship.createEnemy();
+                spaceship.collision();
+                Thread.sleep(100);
 
 
             } catch (InterruptedException e) {
@@ -50,18 +44,6 @@ public class SpaceImpactGame {
             }
         }
     }
-
-    public void deleteEnemy() {
-        for (int i = 0; i < enemyList.size(); i++) {
-           // if (enemyList.get(i))
-        }
-    }
-
-   /* public void isShot(){
-        for (int i = 0; i < enemyList.size(); i++) {
-        if (enemyList.get(i).getX() == bulletList.get)
-                enemyList.get(i).hit();
-    }*/
 
 
 }

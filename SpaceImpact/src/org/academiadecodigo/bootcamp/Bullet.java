@@ -1,6 +1,9 @@
 package org.academiadecodigo.bootcamp;
 
+import org.academiadecodigo.simplegraphics.graphics.Rectangle;
 import org.academiadecodigo.simplegraphics.pictures.Picture;
+
+import java.awt.*;
 
 public class Bullet {
         private Picture bullet;
@@ -28,6 +31,10 @@ public class Bullet {
             }
         }
 
+        public Rectangle hitBox(){
+            Rectangle hitBox = new Rectangle(bullet.getX(), bullet.getY(), bullet.getMaxX(), bullet.getMaxY());
+            return  hitBox;
+        }
         public int getPos(){
             return bullet.getMaxX();
         }

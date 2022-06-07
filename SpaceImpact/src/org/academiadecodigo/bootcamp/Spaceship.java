@@ -6,6 +6,7 @@ import org.academiadecodigo.simplegraphics.keyboard.KeyboardEventType;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardHandler;
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class Spaceship implements KeyboardHandler {
@@ -13,12 +14,16 @@ public class Spaceship implements KeyboardHandler {
     private int health;
     private Picture spaceship;
     private LinkedList<Bullet> bulletList;
+    private EnemyFactory factory;
+    private LinkedList<Enemy> enemyList;
 
     public Spaceship() {
         spaceship = new Picture(10, 10, "resources/space.png");
         spaceship.grow(-50, -50);
         init();
         bulletList = new LinkedList<>();
+        enemyList = new LinkedList<>();
+        factory = new EnemyFactory();
     }
 
     public void init() {
@@ -38,6 +43,33 @@ public class Spaceship implements KeyboardHandler {
                 bulletList.remove(bulletList.get(i));
             } else {
                 bulletList.get(i).moveBullet();
+            }
+        }
+    }
+
+    public void createEnemy() {
+        if (enemyList.size() < 10) {
+            enemyList.add(factory.newEnemy());
+        }
+    }
+
+    public void collision() {
+        for (int i = 0; i < bulletList.size(); i++) {
+            for (int j = 0; j < enemyList.size(); j++) {
+                System.out.println("here" + enemyList.size());
+                if (bulletList.get(i).hitBox().getX() < enemyList.get(j).hitBox().getWidth() &&
+                bulletList.get(i).hitBox().getY() < enemyList.get(j).hitBox().getHeight() &&
+                        enemyList.get(j).hitBox().getX() < bulletList.get(i).hitBox().getWidth() &&
+                        enemyList.get(j).hitBox().getY() < bulletList.get(i).hitBox().getHeight()) {
+                    System.out.println("bulletX: " + bulletList.get(i).hitBox().getX());
+                    System.out.println("enemyx:" + enemyList.get(j).hitBox().getX());
+                    System.out.println("bMAXX:" +  bulletList.get(i).hitBox().getWidth() );
+                    System.out.println("eMAXX" +  enemyList.get(j).hitBox().getWidth() );
+                    enemyList.get(j).hit(Bullet.BULLETDAMAGE);
+                    enemyList.get(j).removeEnemy();
+                    enemyList.remove(enemyList.get(j));
+                    System.out.println("also here" + enemyList.size());
+                }
             }
         }
     }

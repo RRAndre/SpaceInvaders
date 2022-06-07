@@ -1,5 +1,6 @@
 package org.academiadecodigo.bootcamp;
 
+import org.academiadecodigo.simplegraphics.graphics.Rectangle;
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
 public abstract class Enemy implements Destroyable{
@@ -12,11 +13,17 @@ public abstract class Enemy implements Destroyable{
 
     //Methods
 
-    public void shoot(){}
+    public Rectangle hitBox(){
+        return null;
+    }
 
     public void moveEnemy(){}
 
+
     //Getters
+    public int getPos(){
+        return enemy.getX();
+    }
 
     public int getHealth() {
         return health;
@@ -25,8 +32,13 @@ public abstract class Enemy implements Destroyable{
     public int getDamage() {
         return damage;
     }
+    public int getMaxX(){
+        return enemy.getMaxX();
+    }
+
 
     //Setters
+    public void removeEnemy(){}
 
     public void setHealth(int health) {
         this.health = health;
