@@ -17,6 +17,8 @@ public abstract class Enemy implements Destroyable{
         return null;
     }
 
+    public void initEnemy(){}
+
     public void moveEnemy(){}
 
 

@@ -10,13 +10,13 @@ public class RegularEnemy extends Enemy {
 
     public RegularEnemy(int col, int row) {
         enemy = new Picture(col, row, "resources/enemy3.png");
+        enemy.grow(-10, -10);
+        setHealth(20);
         initEnemy();
     }
 
     public void initEnemy() {
-        enemy.grow(-10, -10);
         enemy.draw();
-        setHealth(20);
     }
 
     public void removeEnemy() {
@@ -24,12 +24,7 @@ public class RegularEnemy extends Enemy {
     }
 
     public void moveEnemy() {
-        int enemyMoveX = enemy.getX() - (Background.CELLSIZE * 2);
-        int enemyMoveY = enemy.getY() + (2 * Background.CELLSIZE);
-        int moveX = enemyMoveX < Background.MAXCOLS ? enemyMoveY : Background.MAXCOLS;
-        int moveY = enemyMoveY < Background.MAXROWS ? enemyMoveY : Background.MAXROWS;
-        enemy.translate(moveX, moveY);
-        System.out.println("here");
+        enemy.translate(-Background.CELLSIZE, 0);
     }
 
     //Getters

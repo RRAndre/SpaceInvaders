@@ -47,28 +47,32 @@ public class Spaceship implements KeyboardHandler {
         }
     }
 
-    public void createEnemy() {
-        if (enemyList.size() < 10) {
+    public void createEnemy() throws InterruptedException {
+        if (enemyList.size() < 5) {
             enemyList.add(factory.newEnemy());
         }
     }
 
+    public void moveAllEnemies() {
+        for (int i = 0; i < enemyList.size(); i++) {
+            if (!enemyList.get(i).isDestroyed()) {
+                enemyList.get(i).moveEnemy();
+            }
+        }
+    }
+
+
     public void collision() {
         for (int i = 0; i < bulletList.size(); i++) {
             for (int j = 0; j < enemyList.size(); j++) {
-                System.out.println("here" + enemyList.size());
                 if (bulletList.get(i).hitBox().getX() < enemyList.get(j).hitBox().getWidth() &&
-                bulletList.get(i).hitBox().getY() < enemyList.get(j).hitBox().getHeight() &&
+                        bulletList.get(i).hitBox().getY() < enemyList.get(j).hitBox().getHeight() &&
                         enemyList.get(j).hitBox().getX() < bulletList.get(i).hitBox().getWidth() &&
                         enemyList.get(j).hitBox().getY() < bulletList.get(i).hitBox().getHeight()) {
-                    System.out.println("bulletX: " + bulletList.get(i).hitBox().getX());
-                    System.out.println("enemyx:" + enemyList.get(j).hitBox().getX());
-                    System.out.println("bMAXX:" +  bulletList.get(i).hitBox().getWidth() );
-                    System.out.println("eMAXX" +  enemyList.get(j).hitBox().getWidth() );
                     enemyList.get(j).hit(Bullet.BULLETDAMAGE);
+                    enemyList.get(j).setDestroyed();
                     enemyList.get(j).removeEnemy();
                     enemyList.remove(enemyList.get(j));
-                    System.out.println("also here" + enemyList.size());
                 }
             }
         }

@@ -31,12 +31,17 @@ public class SpaceImpactGame {
 
         while(true){
 
+
+
             try {
                 spaceship.shoot();
+               //SoundClass.play();
                 spaceship.moveAllBullets();
                 spaceship.createEnemy();
+
+              spaceship.moveAllEnemies();
                 spaceship.collision();
-                Thread.sleep(100);
+                Thread.sleep(200);
 
 
             } catch (InterruptedException e) {
