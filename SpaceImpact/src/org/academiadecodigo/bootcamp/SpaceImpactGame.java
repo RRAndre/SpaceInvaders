@@ -8,7 +8,7 @@ public class SpaceImpactGame {
     private InitialMenu menu;
     private Background background;
 
-    public SpaceImpactGame(){
+    public SpaceImpactGame() {
         //Initial menu all fucked up
         //menu = new InitialMenu();
         startGameObjects();
@@ -23,26 +23,26 @@ public class SpaceImpactGame {
         }
     }*/
 
-    public void startGameObjects(){
+    public void startGameObjects() {
         background = new Background();
         spaceship = new Spaceship();
     }
-    public void startGame(){
 
-        while(true){
+    public void startGame() {
 
+        while (true) {
 
 
             try {
                 spaceship.shoot();
-               //SoundClass.play();
+
                 spaceship.moveAllBullets();
                 spaceship.createEnemy();
-
-              spaceship.moveAllEnemies();
+                spaceship.moveAllEnemies();
                 spaceship.collision();
-                Thread.sleep(200);
 
+                SoundClass.play();
+               // Thread.sleep(20);
 
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);

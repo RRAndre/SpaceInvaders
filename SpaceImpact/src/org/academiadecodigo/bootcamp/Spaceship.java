@@ -34,6 +34,7 @@ public class Spaceship implements KeyboardHandler {
     //Methods
     public void shoot() {
         bulletList.add(new Bullet(spaceship.getMaxX(), middleY() - 3));
+       // SoundClass.play();
     }
 
     public void moveAllBullets() {

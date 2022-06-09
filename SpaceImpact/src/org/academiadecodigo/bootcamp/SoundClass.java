@@ -18,6 +18,8 @@ public class SoundClass implements LineListener {
             Clip audioClip = (Clip) AudioSystem.getLine(info);
             audioClip.addLineListener(this);
             audioClip.open(audioStream);
+            //TODO SOM TESTE
+            audioClip.setMicrosecondPosition(2);
             audioClip.start();
 
             while (!playCompleted) {
