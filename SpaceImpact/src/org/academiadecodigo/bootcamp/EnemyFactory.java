@@ -3,38 +3,50 @@ package org.academiadecodigo.bootcamp;
 public class EnemyFactory {
 
     private int posYCounter = 0;
-    private int[] waveOne;
-    public EnemyFactory(){
-        waveOne = new int[4];
+    private int enemyCounter;
+    private Enemy boss;
+
+    public EnemyFactory() {
     }
 
-    public Enemy newEnemy(){
+    public Enemy newEnemy() {
         //Method to define position
-       Enemy newEnemy = new RegularEnemy(creationX(), createPositionY());
-        return newEnemy;
-    }
-
-    //Update method to create order position coming from MAXCOLS
-    //public int createPositionX(){
-       /* int randomX = (int) (Math.random() * creationLimit());
-        int xPos = creationLimit() + randomX;
-        if(xPos < Background.MAXCOLS - Background.CELLSIZE * 3) {
-            return xPos;
+       // if (enemyCounter < 10) {
+            Enemy newEnemy = new RegularEnemy(creationX(), createPositionY());
+           // enemyCounter++;
+            //System.out.println(enemyCounter);
+            return newEnemy;
         }
-        return creationLimit() + Background.CELLSIZE * 4; */
+       /* if (enemyCounter == 10) {
+            boss = new Boss(Background.MAXCOLS - 270, middleY());
+            System.out.println("boss");
+            // enemyCounter = 0;
+        }
+        if(boss.isDestroyed()){
+            enemyCounter = 0;
+        }
+         */
 
-    public int creationX(){
+    public Enemy createBoss(){
+        boss = new Boss(Background.MAXCOLS - 340, middleY());
+        return boss;
+    }
+    public int creationX() {
         return Background.MAXCOLS - 70;
     }
 
-    public int createPositionY(){
-        if(posYCounter >= (Background.MAXROWS - Background.CELLSIZE*8)){
+    public int middleY() {
+        return (Background.MAXROWS - Background.PADDING) / 2;
+    }
+
+    public int createPositionY() {
+        if (posYCounter >= (Background.MAXROWS - Background.CELLSIZE * 8)) {
             posYCounter = 0;
         }
-            posYCounter += 150;
-            return posYCounter;
-        }
-
+        posYCounter += 150;
+        return posYCounter;
     }
+
+}
 
 

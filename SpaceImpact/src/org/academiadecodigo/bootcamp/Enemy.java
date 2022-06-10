@@ -37,6 +37,9 @@ public abstract class Enemy implements Destroyable{
     public int getMaxX(){
         return enemy.getMaxX();
     }
+    public int getWidth(){
+        return 0;
+    };
 
 
     //Setters

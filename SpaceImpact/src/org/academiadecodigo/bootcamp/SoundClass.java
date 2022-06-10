@@ -4,10 +4,9 @@ import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 
-public class SoundClass implements LineListener {
+public class SoundClass implements LineListener, Runnable {
 
     boolean playCompleted;
-
     void play(String audioFilePath) {
         File audioFile = new File(audioFilePath);
 
@@ -18,8 +17,7 @@ public class SoundClass implements LineListener {
             Clip audioClip = (Clip) AudioSystem.getLine(info);
             audioClip.addLineListener(this);
             audioClip.open(audioStream);
-            //TODO SOM TESTE
-            audioClip.setMicrosecondPosition(2);
+            //audioClip.setMicrosecondPosition(2);
             audioClip.start();
 
             while (!playCompleted) {
@@ -46,11 +44,9 @@ public class SoundClass implements LineListener {
         LineEvent.Type type = event.getType();
 
         if (type == LineEvent.Type.START) {
-            System.out.println("Playback starded");
 
         } else if (type == LineEvent.Type.STOP) {
             playCompleted = true;
-            System.out.println("Playback completed.");
 
         }
     }
@@ -59,5 +55,10 @@ public class SoundClass implements LineListener {
         String audioFilePath = "resources/shoot.wav";
         SoundClass player = new SoundClass();
         player.play(audioFilePath);
+    }
+
+    @Override
+    public void run() {
+        play();
     }
 }

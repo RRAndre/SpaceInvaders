@@ -16,6 +16,7 @@ public class Spaceship implements KeyboardHandler {
     private LinkedList<Bullet> bulletList;
     private EnemyFactory factory;
     private LinkedList<Enemy> enemyList;
+    private int enemyCounter = 0;
 
     public Spaceship() {
         spaceship = new Picture(10, 10, "resources/space.png");
@@ -34,7 +35,7 @@ public class Spaceship implements KeyboardHandler {
     //Methods
     public void shoot() {
         bulletList.add(new Bullet(spaceship.getMaxX(), middleY() - 3));
-       // SoundClass.play();
+        // SoundClass.play();
     }
 
     public void moveAllBullets() {
@@ -49,9 +50,24 @@ public class Spaceship implements KeyboardHandler {
     }
 
     public void createEnemy() throws InterruptedException {
-        if (enemyList.size() < 5) {
-            enemyList.add(factory.newEnemy());
+        if (enemyCounter < 10) {
+            if (enemyList.size() < 5) {
+                enemyList.add(factory.newEnemy());
+                enemyCounter++;
+            }
         }
+        if (enemyCounter == 10 && checkAllEnemyDead()) {
+            enemyList.add(factory.createBoss());
+            enemyCounter++;
+        }
+    }
+    public boolean checkAllEnemyDead() {
+        for (int i = 0; i < enemyList.size(); i++) {
+            if (!enemyList.get(i).isDestroyed()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void moveAllEnemies() {
@@ -62,7 +78,6 @@ public class Spaceship implements KeyboardHandler {
         }
     }
 
-
     public void collision() {
         for (int i = 0; i < bulletList.size(); i++) {
             for (int j = 0; j < enemyList.size(); j++) {
@@ -71,12 +86,20 @@ public class Spaceship implements KeyboardHandler {
                         enemyList.get(j).hitBox().getX() < bulletList.get(i).hitBox().getWidth() &&
                         enemyList.get(j).hitBox().getY() < bulletList.get(i).hitBox().getHeight()) {
                     enemyList.get(j).hit(Bullet.BULLETDAMAGE);
-                    enemyList.get(j).setDestroyed();
-                    enemyList.get(j).removeEnemy();
-                    enemyList.remove(enemyList.get(j));
+                    bulletList.get(i).removeBullet();
+                    bulletList.remove(bulletList.get(i));
+                    if (enemyList.get(j).isDestroyed()) {
+                        enemyList.get(j).removeEnemy();
+                        enemyList.remove(enemyList.get(j));
+                    }
+
                 }
             }
         }
+    }
+
+    public void collisionBoss() {
+
     }
 
     public int middleY() {
@@ -84,11 +107,9 @@ public class Spaceship implements KeyboardHandler {
     }
 
     //Getters
-
     public int getHealth() {
         return health;
     }
-
     //Setters
 
     public void setHealth(int health) {

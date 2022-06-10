@@ -11,6 +11,7 @@ public class Background {
 
     private Picture background;
     private Rectangle temp;
+    private Picture score;
     public static final int CELLSIZE = 20;
     public static final int MAXCOLS = 95 * CELLSIZE;
     public static final int MAXROWS = 45 * CELLSIZE;;
@@ -18,12 +19,16 @@ public class Background {
 
     public Background(){
         temp = new Rectangle(PADDING,PADDING,MAXCOLS, MAXROWS);
+        background = new Picture(PADDING, PADDING, "resources/background.png");
+        score = new Picture(PADDING,PADDING, "resources/scorehealth.png");
         init();
     }
 
     public void init(){
-        temp.setColor(Color.LIGHT_GRAY);
-        temp.fill();
+        background.draw();
+        score.draw();
+        //temp.setColor(Color.LIGHT_GRAY);
+        //temp.fill();
     }
 
 }
