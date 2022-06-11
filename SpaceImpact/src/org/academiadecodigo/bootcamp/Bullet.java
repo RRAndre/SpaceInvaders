@@ -5,7 +5,7 @@ import org.academiadecodigo.simplegraphics.pictures.Picture;
 
 import java.awt.*;
 
-public class Bullet {
+public class Bullet implements Destroyable{
         private Picture bullet;
         public static final int BULLETDAMAGE = 20;
 
@@ -38,5 +38,15 @@ public class Bullet {
         public int getPos(){
             return bullet.getMaxX();
         }
+
+    @Override
+    public void hit(int damage) {
+
+    }
+
+    @Override
+    public boolean isDestroyed() {
+        return false;
+    }
 }
 

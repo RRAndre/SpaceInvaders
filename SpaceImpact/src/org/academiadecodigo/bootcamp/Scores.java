@@ -2,7 +2,7 @@ package org.academiadecodigo.bootcamp;
 
 public enum Scores {
 
-    REGULARENEMY (200),
+    REGULAR_ENEMY (200),
     BOSS(1000);
 
    public int scoreValue;

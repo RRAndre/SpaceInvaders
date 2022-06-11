@@ -12,8 +12,8 @@ public class InitialMenu implements KeyboardHandler {
     private Picture pictureHighScore;
 
     public InitialMenu(){
-        pictureNewGame = new Picture(Background.PADDING, Background.PADDING, "resources/startmenu.png");
-        pictureHighScore = new Picture(Background.PADDING, Background.PADDING, "resources/menuHighScore.png");
+        //pictureNewGame = new Picture(Background.PADDING, Background.PADDING, "");
+        //pictureHighScore = new Picture(Background.PADDING, Background.PADDING, "");
         initMenu();
     }
 

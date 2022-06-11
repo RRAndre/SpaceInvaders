@@ -7,6 +7,8 @@ import org.academiadecodigo.simplegraphics.keyboard.KeyboardEventType;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardHandler;
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
+import java.awt.*;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
@@ -25,8 +27,10 @@ public class Spaceship implements KeyboardHandler {
     private ExecutorService soundThreadPool = Executors.newCachedThreadPool();
     private SoundClass sound;
     private Score score;
+    private Picture level;
+    private int actualLevel;
 
-    public Spaceship() {
+    public Spaceship() throws IOException, FontFormatException {
         spaceship = new Picture(10, Background.PADDING + (Background.CELLSIZE*5), "resources/space5.png");
         spaceship.grow(-20, -20);
         init();
@@ -41,6 +45,8 @@ public class Spaceship implements KeyboardHandler {
         spaceship.draw();
         keyboardInit();
         lives = Lives.FULL_LIVES.initPic();
+        actualLevel = 1;
+        checkLevel();
     }
 
     //Methods
@@ -75,8 +81,49 @@ public class Spaceship implements KeyboardHandler {
             enemyList.add(factory.createBoss());
             enemyCounter++;
         }
+        if (enemyCounter == 11 && checkAllEnemyDead()) {
+            actualLevel++;
+            enemyCounter = 0;
+            checkLevel();
+
+        }
     }
 
+    public void checkLevel(){
+        switch (actualLevel){
+            case 1:
+                level = LevelUp.LEVEL_ONE.initPic();
+                break;
+            case 2:
+                level.delete();
+                level = LevelUp.LEVEL_TWO.initPic();
+                break;
+            case 3:
+                level.delete();
+                level = LevelUp.LEVEL_THREE.initPic();
+                break;
+            case 4:
+                level.delete();
+                level = LevelUp.LEVEL_FOUR.initPic();
+                break;
+            case 5:
+                level.delete();
+                level = LevelUp.LEVEL_FIVE.initPic();
+                break;
+        }
+    }
+       /* if(checkAllEnemyDead() && enemyCounter >= 11 && enemyCounter < 16){
+            if (enemyList.size() < 5) {
+                enemyList.add(factory.newEnemy());
+                enemyCounter++;
+            }
+        }
+        if (enemyCounter == 16 && checkAllEnemyDead()) {
+            enemyList.add(factory.createBoss());
+            enemyCounter++;
+        }
+
+        */
     public boolean checkAllEnemyDead() {
         for (int i = 0; i < enemyList.size(); i++) {
             if (!enemyList.get(i).isDestroyed()) {
@@ -101,16 +148,24 @@ public class Spaceship implements KeyboardHandler {
     public void collision() {
         for (int i = 0; i < bulletList.size(); i++) {
             for (int j = 0; j < enemyList.size(); j++) {
+                System.out.println("bullet " + bulletList.size());
+                System.out.println(enemyList.size() + "enemy");
                 if (bulletList.get(i).hitBox().getX() < enemyList.get(j).hitBox().getWidth() &&
                         bulletList.get(i).hitBox().getY() < enemyList.get(j).hitBox().getHeight() &&
                         enemyList.get(j).hitBox().getX() < bulletList.get(i).hitBox().getWidth() &&
-                        enemyList.get(j).hitBox().getY() < bulletList.get(i).hitBox().getHeight()) {
+                        enemyList.get(j).hitBox().getY() < bulletList.get(i).hitBox().getHeight() &&
+                !enemyList.get(j).isDestroyed()) {
                     enemyList.get(j).hit(Bullet.BULLETDAMAGE);
                     bulletList.get(i).removeBullet();
                     bulletList.remove(bulletList.get(i));
                     if (enemyList.get(j).isDestroyed()) {
+                        if(enemyList.get(j) instanceof RegularEnemy) {
+                            score.setScore(Scores.REGULAR_ENEMY.scoreValue);
+                        }
+                        if(enemyList.get(j) instanceof Boss){
+                            score.setScore(Scores.BOSS.scoreValue);
+                        }
                         System.out.println(score.getScore());
-                        score.setScore(Scores.REGULARENEMY.scoreValue);
                         enemyList.get(j).removeEnemy();
                         enemyList.remove(enemyList.get(j));
                     }
@@ -126,18 +181,22 @@ public class Spaceship implements KeyboardHandler {
             spaceship.getMaxX() > enemyList.get(i).hitBox().getX() &&
             spaceship.getY() < enemyList.get(i).hitBox().getHeight() &&
             spaceship.getMaxY() > enemyList.get(i).hitBox().getY()){
-                enemyList.get(i).removeEnemy();
-                enemyList.remove(enemyList.get(i));
+                //enemyList.get(i).removeEnemy();
+               // enemyList.remove(enemyList.get(i));
                 health--;
                 lives();
+                loosingLives();
                 //shakeSpaceship();
                 if(health == 0){
                     //Canvas.snapshot();
-                    //Canvas.pause();
+                    Canvas.pause();
                 }
                 System.out.println(health);
             }
         }
+    }
+    public void loosingLives(){
+        spaceship.translate(-(spaceship.getX() - Background.PADDING), 0);
     }
 
     public void shakeSpaceship(){
@@ -162,6 +221,7 @@ public class Spaceship implements KeyboardHandler {
                break;
            case 0:
                lives = Lives.NO_LIVES.initPic();
+               SpaceImpactGame.endGame();
                break;
                //TODO Game Over
         }
@@ -193,6 +253,7 @@ public class Spaceship implements KeyboardHandler {
         KeyboardSetup.keyboardInit(keyboard, KeyboardEventType.KEY_PRESSED, KeyboardEvent.KEY_UP);
         //DOWN KEY
         KeyboardSetup.keyboardInit(keyboard, KeyboardEventType.KEY_PRESSED, KeyboardEvent.KEY_DOWN);
+
     }
 
     //Moves
