@@ -11,13 +11,13 @@ public class Boss extends Enemy {
     private int timer;
 
     public Boss(int col, int row) {
-        boss = new Picture(col, row, "resources/boss2.png");
+        boss = new Picture(col, row, "resources/boss.png");
         initBoss();
     }
 
     public void initBoss() {
         boss.draw();
-        boss.grow(100,100);
+        //boss.grow(100,100);
     }
 
     public void removeEnemy() {

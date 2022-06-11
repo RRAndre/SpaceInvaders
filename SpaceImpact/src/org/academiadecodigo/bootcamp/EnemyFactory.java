@@ -28,7 +28,7 @@ public class EnemyFactory {
          */
 
     public Enemy createBoss(){
-        boss = new Boss(Background.MAXCOLS - 340, middleY());
+        boss = new Boss(Background.MAXCOLS - 444, middleY());
         return boss;
     }
     public int creationX() {

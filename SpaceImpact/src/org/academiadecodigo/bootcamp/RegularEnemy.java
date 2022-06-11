@@ -9,8 +9,8 @@ public class RegularEnemy extends Enemy {
     private Rectangle hitBox;
 
     public RegularEnemy(int col, int row) {
-        enemy = new Picture(col, row, "resources/enemy3.png");
-        enemy.grow(-10, -10);
+        enemy = new Picture(col, row, "resources/enemy.png");
+       //enemy.grow(-15, -15);
         setHealth(20);
         initEnemy();
     }

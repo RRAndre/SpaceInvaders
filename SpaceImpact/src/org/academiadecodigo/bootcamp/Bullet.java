@@ -10,7 +10,7 @@ public class Bullet {
         public static final int BULLETDAMAGE = 20;
 
         public Bullet(int col, int row) {
-            bullet = new Picture(col, row, "resources/bullet.png");
+            bullet = new Picture(col, row, "resources/bulletpink.png");
             initBullet();
         }
 

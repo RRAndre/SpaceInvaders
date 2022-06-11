@@ -1,5 +1,6 @@
 package org.academiadecodigo.bootcamp;
 
+import org.academiadecodigo.simplegraphics.graphics.Canvas;
 import org.academiadecodigo.simplegraphics.keyboard.Keyboard;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardEvent;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardEventType;
@@ -8,34 +9,48 @@ import org.academiadecodigo.simplegraphics.pictures.Picture;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Spaceship implements KeyboardHandler {
 
-    private int health;
+    private int health = 3;
+    private Picture lives;
     private Picture spaceship;
     private LinkedList<Bullet> bulletList;
     private EnemyFactory factory;
     private LinkedList<Enemy> enemyList;
     private int enemyCounter = 0;
+    private int timer;
+    private ExecutorService soundThreadPool = Executors.newCachedThreadPool();
+    private SoundClass sound;
+    private Score score;
 
     public Spaceship() {
-        spaceship = new Picture(10, 10, "resources/space.png");
-        spaceship.grow(-50, -50);
+        spaceship = new Picture(10, Background.PADDING + (Background.CELLSIZE*5), "resources/space5.png");
+        spaceship.grow(-20, -20);
         init();
         bulletList = new LinkedList<>();
         enemyList = new LinkedList<>();
         factory = new EnemyFactory();
+        sound = new SoundClass();
+        score = new Score();
     }
 
     public void init() {
         spaceship.draw();
         keyboardInit();
+        lives = Lives.FULL_LIVES.initPic();
     }
 
     //Methods
     public void shoot() {
-        bulletList.add(new Bullet(spaceship.getMaxX(), middleY() - 3));
-        // SoundClass.play();
+        if (timer % 3 == 0) {
+            bulletList.add(new Bullet(spaceship.getMaxX(), middleY() - 3));
+            soundThreadPool.submit(sound);
+            timer++;
+        }
+        timer++;
     }
 
     public void moveAllBullets() {
@@ -61,6 +76,7 @@ public class Spaceship implements KeyboardHandler {
             enemyCounter++;
         }
     }
+
     public boolean checkAllEnemyDead() {
         for (int i = 0; i < enemyList.size(); i++) {
             if (!enemyList.get(i).isDestroyed()) {
@@ -74,6 +90,10 @@ public class Spaceship implements KeyboardHandler {
         for (int i = 0; i < enemyList.size(); i++) {
             if (!enemyList.get(i).isDestroyed()) {
                 enemyList.get(i).moveEnemy();
+            }
+            if(enemyList.get(i).hitBox().getX() < Background.PADDING){
+                enemyList.get(i).removeEnemy();
+                enemyList.remove(enemyList.get(i));
             }
         }
     }
@@ -89,6 +109,8 @@ public class Spaceship implements KeyboardHandler {
                     bulletList.get(i).removeBullet();
                     bulletList.remove(bulletList.get(i));
                     if (enemyList.get(j).isDestroyed()) {
+                        System.out.println(score.getScore());
+                        score.setScore(Scores.REGULARENEMY.scoreValue);
                         enemyList.get(j).removeEnemy();
                         enemyList.remove(enemyList.get(j));
                     }
@@ -98,8 +120,51 @@ public class Spaceship implements KeyboardHandler {
         }
     }
 
-    public void collisionBoss() {
+    public void spaceshipEnemiesCollision() {
+        for (int i = 0; i < enemyList.size(); i++) {
+            if(spaceship.getX() < enemyList.get(i).hitBox().getWidth() &&
+            spaceship.getMaxX() > enemyList.get(i).hitBox().getX() &&
+            spaceship.getY() < enemyList.get(i).hitBox().getHeight() &&
+            spaceship.getMaxY() > enemyList.get(i).hitBox().getY()){
+                enemyList.get(i).removeEnemy();
+                enemyList.remove(enemyList.get(i));
+                health--;
+                lives();
+                //shakeSpaceship();
+                if(health == 0){
+                    //Canvas.snapshot();
+                    //Canvas.pause();
+                }
+                System.out.println(health);
+            }
+        }
+    }
 
+    public void shakeSpaceship(){
+        try {
+        spaceship.delete();
+        spaceship.draw();
+        spaceship.delete();
+        spaceship.draw();
+            Thread.sleep(100);
+        } catch (InterruptedException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void lives(){
+       switch (health){
+           case 2:
+               lives = Lives.TWO_LIVES.initPic();
+               break;
+           case 1 :
+               lives = Lives.ONE_LIVES.initPic();
+               break;
+           case 0:
+               lives = Lives.NO_LIVES.initPic();
+               break;
+               //TODO Game Over
+        }
     }
 
     public int middleY() {
@@ -135,7 +200,7 @@ public class Spaceship implements KeyboardHandler {
     public void keyPressed(KeyboardEvent keyboardEvent) {
 
         if (keyboardEvent.getKey() == KeyboardEvent.KEY_LEFT) {
-            if (spaceship.getX() >= Background.PADDING) {
+            if (spaceship.getX() >= Background.PADDING + Background.CELLSIZE) {
                 spaceship.translate(-10, 0);
             }
         }
@@ -147,7 +212,7 @@ public class Spaceship implements KeyboardHandler {
         }
 
         if (keyboardEvent.getKey() == KeyboardEvent.KEY_UP) {
-            if (spaceship.getY() >= Background.PADDING) {
+            if (spaceship.getY() >= Background.PADDING + (Background.CELLSIZE*5)) {
                 spaceship.translate(0, -10);
             }
         }

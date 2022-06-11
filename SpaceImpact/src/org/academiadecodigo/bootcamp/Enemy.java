@@ -3,7 +3,7 @@ package org.academiadecodigo.bootcamp;
 import org.academiadecodigo.simplegraphics.graphics.Rectangle;
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
-public abstract class Enemy implements Destroyable{
+public abstract class Enemy implements Destroyable {
 
     public int X;
     private int health;
@@ -13,17 +13,19 @@ public abstract class Enemy implements Destroyable{
 
     //Methods
 
-    public Rectangle hitBox(){
+    public Rectangle hitBox() {
         return null;
     }
 
-    public void initEnemy(){}
+    public void initEnemy() {
+    }
 
-    public void moveEnemy(){}
+    public void moveEnemy() {
+    }
 
 
     //Getters
-    public int getPos(){
+    public int getPos() {
         return enemy.getX();
     }
 
@@ -34,16 +36,21 @@ public abstract class Enemy implements Destroyable{
     public int getDamage() {
         return damage;
     }
-    public int getMaxX(){
+
+    public int getMaxX() {
         return enemy.getMaxX();
     }
-    public int getWidth(){
+
+    public int getWidth() {
         return 0;
-    };
+    }
+
+    ;
 
 
     //Setters
-    public void removeEnemy(){}
+    public void removeEnemy() {
+    }
 
     public void setHealth(int health) {
         this.health = health;
@@ -53,7 +60,9 @@ public abstract class Enemy implements Destroyable{
         this.damage = damage;
     }
 
-    public void setDestroyed() { this.destroyed = true; }
+    public void setDestroyed() {
+        this.destroyed = true;
+    }
 
 
     @Override
