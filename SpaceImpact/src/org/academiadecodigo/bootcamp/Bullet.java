@@ -33,7 +33,7 @@ public class Bullet implements Destroyable{
 
     public void moveEnemyBullet() {
         if (bullet.getX() > Background.PADDING) {
-            bullet.translate( -Background.CELLSIZE, 0);
+            bullet.translate( -Background.CELLSIZE*5, 0);
         } else {
             removeBullet();
         }
@@ -45,6 +45,10 @@ public class Bullet implements Destroyable{
         }
         public int getPos(){
             return bullet.getMaxX();
+        }
+
+        public int getX(){
+            return bullet.getX();
         }
 
     @Override

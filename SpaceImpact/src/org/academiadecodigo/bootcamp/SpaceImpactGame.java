@@ -18,24 +18,8 @@ public class SpaceImpactGame implements KeyboardHandler {
     private boolean startMenu = true;
     private Picture menuPic;
     private Background background;
-    private boolean holdGame = false;
-    private StartMenu soundStart;
     private boolean actualGame;
-
-    private Sound introSound = new Sound("resources/retro_space.wav");
-
-    private Thread thread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            try {
-                startGame();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (FontFormatException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    });
+    private Sound introSound = new Sound("/resources/retrospace.wav");
 
     public SpaceImpactGame() throws IOException, FontFormatException {
         keyboardInit();
@@ -46,7 +30,6 @@ public class SpaceImpactGame implements KeyboardHandler {
         startMenu = true;
         menuPic = new Picture(Background.PADDING, Background.PADDING, "resources/startmenu.png");
         menuPic.draw();
-        //soundStart = new StartMenu();
         introSound.play(true);
 
     }
@@ -61,7 +44,8 @@ public class SpaceImpactGame implements KeyboardHandler {
 
         menuPic = new Picture(Background.PADDING, Background.PADDING, "resources/startmenu.png");
         menuPic.draw();
-        soundStart = new StartMenu();
+       //HighScore highScore = new HighScore();
+        introSound.play(true);
         try {
             this.wait();
         } catch (InterruptedException e) {
@@ -84,6 +68,7 @@ public class SpaceImpactGame implements KeyboardHandler {
                 spaceship.spaceshipEnemiesCollision();
                 spaceship.enemyShot();
                 spaceship.moveEnemyBullets();
+                spaceship.spaceBossCollision();
                 Thread.sleep(200);
 
             } catch (InterruptedException e) {
@@ -145,7 +130,6 @@ public class SpaceImpactGame implements KeyboardHandler {
         if (keyboardEvent.getKey() == KeyboardEvent.KEY_P) {
             gameIsActive = false;
         }
-
          */
         if (keyboardEvent.getKey() == KeyboardEvent.KEY_S) {
             this.notifyAll();
