@@ -7,6 +7,7 @@ import org.academiadecodigo.simplegraphics.keyboard.KeyboardEventType;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardHandler;
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
+import javax.sound.sampled.LineEvent;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Iterator;
@@ -26,10 +27,12 @@ public class Spaceship implements KeyboardHandler {
     private int enemyCounter = 0;
     private int timer;
     private ExecutorService soundThreadPool = Executors.newCachedThreadPool();
+    private Sound bulletSound = new Sound("resources/shoot.wav");
     private SoundClass sound;
     private Score score;
     private Picture level;
     private int actualLevel;
+    private static boolean endGame;
 
     public Spaceship() throws IOException, FontFormatException {
         spaceship = new Picture(10, Background.PADDING + (Background.CELLSIZE*5), "resources/space5.png");
@@ -55,7 +58,7 @@ public class Spaceship implements KeyboardHandler {
     public void shoot() {
         if (timer % 3 == 0) {
             bulletList.add(new Bullet(spaceship.getMaxX(), middleY() - 3, "resources/bulletpink.png"));
-            soundThreadPool.submit(sound);
+            soundThreadPool.submit(bulletSound);
             timer++;
         }
         timer++;
@@ -169,8 +172,6 @@ public class Spaceship implements KeyboardHandler {
     public void collision() {
         for (int i = 0; i < bulletList.size(); i++) {
             for (int j = 0; j < enemyList.size(); j++) {
-                System.out.println("bullet " + bulletList.size());
-                System.out.println(enemyList.size() + "enemy");
                 if( i >= bulletList.size()){
                     continue;
                 }
@@ -189,7 +190,6 @@ public class Spaceship implements KeyboardHandler {
                         if(enemyList.get(j) instanceof Boss){
                             score.setScore(Scores.BOSS.scoreValue);
                         }
-                        System.out.println(score.getScore());
                         enemyList.get(j).removeEnemy();
                         enemyList.remove(enemyList.get(j));
                     }
@@ -199,7 +199,7 @@ public class Spaceship implements KeyboardHandler {
         }
     }
 
-    public void spaceshipEnemiesCollision() {
+    public void spaceshipEnemiesCollision() throws IOException {
         for (int i = 0; i < enemyList.size(); i++) {
             if(spaceship.getX() < enemyList.get(i).hitBox().getWidth() &&
             spaceship.getMaxX() > enemyList.get(i).hitBox().getX() &&
@@ -214,7 +214,6 @@ public class Spaceship implements KeyboardHandler {
                 if(health == 0){
                     //Canvas.snapshot();
                 }
-                System.out.println(health);
             }
         }
     }
@@ -222,29 +221,26 @@ public class Spaceship implements KeyboardHandler {
         spaceship.translate(-(spaceship.getX() - Background.PADDING), 0);
     }
 
-    public void shakeSpaceship(){
-        try {
-        spaceship.delete();
-        spaceship.draw();
-        spaceship.delete();
-        spaceship.draw();
-            Thread.sleep(100);
-        } catch (InterruptedException e){
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void lives(){
+    public void lives() throws IOException {
        switch (health){
+          /* case 3:
+               lives = Lives.FULL_LIVES.initPic();
+               break;
+
+           */
            case 2:
+               lives.delete();
                lives = Lives.TWO_LIVES.initPic();
                break;
            case 1 :
+               lives.delete();
                lives = Lives.ONE_LIVES.initPic();
                break;
            case 0:
                lives = Lives.NO_LIVES.initPic();
                SpaceImpactGame.endGame();
+               endGame = true;
+               score.saveHighestScore();
                break;
                //TODO Game Over
         }
@@ -276,6 +272,8 @@ public class Spaceship implements KeyboardHandler {
         KeyboardSetup.keyboardInit(keyboard, KeyboardEventType.KEY_PRESSED, KeyboardEvent.KEY_UP);
         //DOWN KEY
         KeyboardSetup.keyboardInit(keyboard, KeyboardEventType.KEY_PRESSED, KeyboardEvent.KEY_DOWN);
+        //Q KEY
+        KeyboardSetup.keyboardInit(keyboard, KeyboardEventType.KEY_PRESSED, KeyboardEvent.KEY_Q);
 
     }
 
@@ -306,6 +304,9 @@ public class Spaceship implements KeyboardHandler {
                 spaceship.translate(0, 10);
             }
         }
+        if (keyboardEvent.getKey() == KeyboardEvent.KEY_Q) {
+            System.exit(0);
+        }
 
     }
 
@@ -315,6 +316,16 @@ public class Spaceship implements KeyboardHandler {
     }
 public void removeSpace(){
         spaceship.delete();
+    for (int i = 0; i < enemyList.size(); i++) {
+        enemyList.get(i).removeEnemy();
+        enemyList.remove(enemyList.get(i));
+    }
+    score.removeText();
+    lives.delete();
+    level.delete();
+    }
 
+    public static boolean isEndGame() {
+        return endGame;
     }
 }

@@ -19,4 +19,8 @@ public enum LevelUp {
         picture.draw();
         return picture;
     }
+
+    public void deleteLvl(){
+        picture.delete();
+    }
 }

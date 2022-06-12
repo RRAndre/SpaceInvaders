@@ -21,4 +21,8 @@ public enum Lives {
         picture.draw();
         return picture;
     }
+
+    public void deleteLives(){
+        picture.delete();
+    }
 }

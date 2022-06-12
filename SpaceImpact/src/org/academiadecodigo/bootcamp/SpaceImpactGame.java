@@ -12,14 +12,18 @@ import java.io.IOException;
 public class SpaceImpactGame implements KeyboardHandler {
 
     private Spaceship spaceship;
-    private SoundClass sound;
-    private static boolean gameStarted = false;
+    private static boolean gameIsActive = true;
     private static boolean endGame;
     private Picture endGamePic;
     private boolean startMenu = true;
     private Picture menuPic;
     private Background background;
+    private boolean holdGame = false;
     private StartMenu soundStart;
+    private boolean actualGame;
+
+    private Sound introSound = new Sound("resources/retro_space.wav");
+
     private Thread thread = new Thread(new Runnable() {
         @Override
         public void run() {
@@ -31,11 +35,10 @@ public class SpaceImpactGame implements KeyboardHandler {
                 throw new RuntimeException(e);
             }
         }
-    }) ;
+    });
 
     public SpaceImpactGame() throws IOException, FontFormatException {
         keyboardInit();
-
         // createMenu();
     }
 
@@ -43,7 +46,9 @@ public class SpaceImpactGame implements KeyboardHandler {
         startMenu = true;
         menuPic = new Picture(Background.PADDING, Background.PADDING, "resources/startmenu.png");
         menuPic.draw();
-        soundStart = new StartMenu();
+        //soundStart = new StartMenu();
+        introSound.play(true);
+
     }
 
     public void startGameObjects() throws IOException, FontFormatException {
@@ -52,27 +57,23 @@ public class SpaceImpactGame implements KeyboardHandler {
 
     }
 
-    public void startGame() throws IOException, FontFormatException {
-        thread.start();
-        menuPic = new Picture(Background.PADDING, Background.PADDING, "resources/startmenu.png");
-        startMenu = true;
-        while (startMenu) {
+    synchronized public void startGame() throws IOException, FontFormatException {
 
-            try {
-                menuPic.draw();
-                soundStart = new StartMenu();
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+        menuPic = new Picture(Background.PADDING, Background.PADDING, "resources/startmenu.png");
+        menuPic.draw();
+        soundStart = new StartMenu();
+        try {
+            this.wait();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
+        menuPic.delete();
+        introSound.stop();
 
 
         startGameObjects();
 
-        while (gameStarted) {
-            menuPic.delete();
-            soundStart.removeSound();
+        while (gameIsActive) {
 
             try {
                 spaceship.shoot();
@@ -88,66 +89,71 @@ public class SpaceImpactGame implements KeyboardHandler {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        }
-        if (endGame) {
-            endGamePic = new Picture(Background.PADDING, Background.PADDING, "resources/gameover.png");
-            endGamePic.draw();
+            if (endGame) {
+                endGamePic = new Picture(Background.PADDING, Background.PADDING, "resources/gameover.png");
+                endGamePic.draw();
+                try {
+                    this.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                reStart();
+                startGameObjects();
+            }
         }
     }
 
+
     public static void endGame() {
-        gameStarted = false;
+        // gameStarted = false;
         endGame = true;
     }
 
     public void reStart() throws IOException, FontFormatException {
-        spaceship.removeSpace();
-        thread.stop();
         endGame = false;
         endGamePic.delete();
         background.removeBackground();
-        startGame();
-        System.out.println( Thread.activeCount());
+        spaceship.removeSpace();
     }
 
     private void keyboardInit() {
         Keyboard keyboard = new Keyboard(this);
-        //Y KEY
-        KeyboardSetup.keyboardInit(keyboard, KeyboardEventType.KEY_PRESSED, KeyboardEvent.KEY_Y);
+        //RESTART KEY
+        KeyboardSetup.keyboardInit(keyboard, KeyboardEventType.KEY_PRESSED, KeyboardEvent.KEY_R);
         //P KEY
-        KeyboardSetup.keyboardInit(keyboard, KeyboardEventType.KEY_PRESSED, KeyboardEvent.KEY_P);
+        //KeyboardSetup.keyboardInit(keyboard, KeyboardEventType.KEY_PRESSED, KeyboardEvent.KEY_P);
         //N KEY
-        KeyboardSetup.keyboardInit(keyboard, KeyboardEventType.KEY_PRESSED, KeyboardEvent.KEY_N);
-        //S KEY
+        //KeyboardSetup.keyboardInit(keyboard, KeyboardEventType.KEY_PRESSED, KeyboardEvent.KEY_N);
+        //START KEY
         KeyboardSetup.keyboardInit(keyboard, KeyboardEventType.KEY_PRESSED, KeyboardEvent.KEY_S);
+        //QUIT KEY
+        KeyboardSetup.keyboardInit(keyboard, KeyboardEventType.KEY_PRESSED, KeyboardEvent.KEY_Q);
 
     }
 
     @Override
-    public void keyPressed(KeyboardEvent keyboardEvent) {
+    synchronized public void keyPressed(KeyboardEvent keyboardEvent) {
 
-        if (keyboardEvent.getKey() == KeyboardEvent.KEY_Y) {
-
-            try {
-                reStart();
-                gameStarted = true;
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (FontFormatException e) {
-                throw new RuntimeException(e);
-            }
+        if (keyboardEvent.getKey() == KeyboardEvent.KEY_R && endGame) {
+            gameIsActive = true;
+            this.notifyAll();
         }
-        if (keyboardEvent.getKey() == KeyboardEvent.KEY_N) {
-           // createMenu();
+        /*if (keyboardEvent.getKey() == KeyboardEvent.KEY_N) {
+            holdGame = true;
             startMenu = true;
         }
         if (keyboardEvent.getKey() == KeyboardEvent.KEY_P) {
-            gameStarted = false;
+            gameIsActive = false;
         }
+
+         */
         if (keyboardEvent.getKey() == KeyboardEvent.KEY_S) {
+            this.notifyAll();
             startMenu = false;
-            gameStarted = true;
+            gameIsActive = true;
+        }
+        if (keyboardEvent.getKey() == KeyboardEvent.KEY_Q) {
+            System.exit(0);
         }
     }
 

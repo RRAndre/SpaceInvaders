@@ -1,19 +1,29 @@
 package org.academiadecodigo.bootcamp;
 
 import javax.sound.sampled.*;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
-public class SoundIntro implements LineListener, Runnable{
+public class SoundIntro implements LineListener, Runnable {
 
     boolean playCompleted;
-    void play(String audioFilePath) {
-        File audioIntroFile = new File(audioFilePath);
 
-        try {
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioIntroFile);
-            AudioFormat format = audioStream.getFormat();
-            DataLine.Info info = new DataLine.Info(Clip.class, format);
+    void play(String audioFilePath) {
+       // File audioIntroFile = new File(audioFilePath);
+
+        try (InputStream in = getClass().getResourceAsStream(audioFilePath)) {
+            InputStream bufferedIn = new BufferedInputStream(in);
+            try (AudioInputStream audioIn = AudioSystem.getAudioInputStream(bufferedIn)){
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioIn);
+                clip.start();
+            }
+            //AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioIntroFile);
+            //AudioFormat format = audioStream.getFormat();
+
+         /*   DataLine.Info info = new DataLine.Info(Clip.class, format);
             Clip audioClip = (Clip) AudioSystem.getLine(info);
             audioClip.addLineListener(this);
             audioClip.open(audioStream);
@@ -29,11 +39,11 @@ public class SoundIntro implements LineListener, Runnable{
             }
 
             audioClip.close();
-        } catch (UnsupportedAudioFileException ex) {
-            System.out.println("The specified audio file is not supported.");
+
+          */
         } catch (LineUnavailableException ex) {
             System.out.println("Audio line for playing back is unavailable.");
-        } catch (IOException ex) {
+        } catch (IOException | UnsupportedAudioFileException ex) {
             System.out.println("Error playing the audio file.");
             ex.printStackTrace();
         }
