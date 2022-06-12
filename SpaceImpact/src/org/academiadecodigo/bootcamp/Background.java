@@ -32,4 +32,8 @@ public class Background {
         return Background.MAXCOLS/2;
     }
 
+    public void removeBackground(){
+        background.delete();
+    }
+
 }

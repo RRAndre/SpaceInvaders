@@ -9,8 +9,8 @@ public class Bullet implements Destroyable{
         private Picture bullet;
         public static final int BULLETDAMAGE = 20;
 
-        public Bullet(int col, int row) {
-            bullet = new Picture(col, row, "resources/bulletpink.png");
+        public Bullet(int col, int row, String pic) {
+            bullet = new Picture(col, row, pic);
             initBullet();
         }
 
@@ -30,6 +30,14 @@ public class Bullet implements Destroyable{
                 removeBullet();
             }
         }
+
+    public void moveEnemyBullet() {
+        if (bullet.getX() > Background.PADDING) {
+            bullet.translate( -Background.CELLSIZE, 0);
+        } else {
+            removeBullet();
+        }
+    }
 
         public Rectangle hitBox(){
             Rectangle hitBox = new Rectangle(bullet.getX(), bullet.getY(), bullet.getMaxX(), bullet.getMaxY());

@@ -50,6 +50,9 @@ public class Boss extends Enemy {
 
     }
 
+    public int middleY(){
+        return (boss.getY() + boss.getHeight()) /2;
+    }
     public Rectangle hitBox() {
         this.hitBox = new Rectangle(boss.getX(), boss.getY(), boss.getMaxX(), boss.getMaxY());
         return hitBox;

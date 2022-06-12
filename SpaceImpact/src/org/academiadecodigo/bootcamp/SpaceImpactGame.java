@@ -13,37 +13,67 @@ public class SpaceImpactGame implements KeyboardHandler {
 
     private Spaceship spaceship;
     private SoundClass sound;
-    private static boolean gameStarted = true;
+    private static boolean gameStarted = false;
     private static boolean endGame;
+    private Picture endGamePic;
     private boolean startMenu = true;
     private Picture menuPic;
-    //private StartMenu menu;
+    private Background background;
+    private StartMenu soundStart;
+    private Thread thread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                startGame();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (FontFormatException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }) ;
 
     public SpaceImpactGame() throws IOException, FontFormatException {
         keyboardInit();
-        createMenu();
+
+        // createMenu();
     }
 
     public void createMenu() {
-        menuPic = new Picture(Background.PADDING, Background.PADDING, "resources/startgame.png");
+        startMenu = true;
+        menuPic = new Picture(Background.PADDING, Background.PADDING, "resources/startmenu.png");
         menuPic.draw();
-       // menu = new StartMenu();
+        soundStart = new StartMenu();
     }
 
     public void startGameObjects() throws IOException, FontFormatException {
+        background = new Background();
         spaceship = new Spaceship();
+
     }
 
-    public void startMenu(){
-        while (startMenu) {
-            System.out.println("ola");
-        }
-        menuPic.delete();
-        gameStarted = true;
-    }
     public void startGame() throws IOException, FontFormatException {
+        thread.start();
+        menuPic = new Picture(Background.PADDING, Background.PADDING, "resources/startmenu.png");
+        startMenu = true;
+        while (startMenu) {
+
+            try {
+                menuPic.draw();
+                soundStart = new StartMenu();
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+
+        startGameObjects();
+
         while (gameStarted) {
-            startGameObjects();
+            menuPic.delete();
+            soundStart.removeSound();
+
             try {
                 spaceship.shoot();
                 spaceship.moveAllBullets();
@@ -51,7 +81,8 @@ public class SpaceImpactGame implements KeyboardHandler {
                 spaceship.moveAllEnemies();
                 spaceship.collision();
                 spaceship.spaceshipEnemiesCollision();
-
+                spaceship.enemyShot();
+                spaceship.moveEnemyBullets();
                 Thread.sleep(200);
 
             } catch (InterruptedException e) {
@@ -59,8 +90,8 @@ public class SpaceImpactGame implements KeyboardHandler {
             }
         }
         if (endGame) {
-            Picture gameOver = new Picture(Background.PADDING, Background.PADDING, "resources/gameover.png");
-            gameOver.draw();
+            endGamePic = new Picture(Background.PADDING, Background.PADDING, "resources/gameover.png");
+            endGamePic.draw();
         }
     }
 
@@ -69,8 +100,14 @@ public class SpaceImpactGame implements KeyboardHandler {
         endGame = true;
     }
 
-    public static void reStart() {
-        gameStarted = true;
+    public void reStart() throws IOException, FontFormatException {
+        spaceship.removeSpace();
+        thread.stop();
+        endGame = false;
+        endGamePic.delete();
+        background.removeBackground();
+        startGame();
+        System.out.println( Thread.activeCount());
     }
 
     private void keyboardInit() {
@@ -90,9 +127,11 @@ public class SpaceImpactGame implements KeyboardHandler {
     public void keyPressed(KeyboardEvent keyboardEvent) {
 
         if (keyboardEvent.getKey() == KeyboardEvent.KEY_Y) {
-            reStart();
+
             try {
-                startGame();
+                reStart();
+                gameStarted = true;
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } catch (FontFormatException e) {
@@ -100,21 +139,15 @@ public class SpaceImpactGame implements KeyboardHandler {
             }
         }
         if (keyboardEvent.getKey() == KeyboardEvent.KEY_N) {
-            createMenu();
+           // createMenu();
+            startMenu = true;
         }
         if (keyboardEvent.getKey() == KeyboardEvent.KEY_P) {
             gameStarted = false;
         }
         if (keyboardEvent.getKey() == KeyboardEvent.KEY_S) {
             startMenu = false;
-            //menu.removeSound();
-            try {
-                startGame();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (FontFormatException e) {
-                throw new RuntimeException(e);
-            }
+            gameStarted = true;
         }
     }
 

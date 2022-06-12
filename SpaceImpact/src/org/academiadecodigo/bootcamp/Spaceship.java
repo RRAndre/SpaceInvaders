@@ -22,6 +22,7 @@ public class Spaceship implements KeyboardHandler {
     private LinkedList<Bullet> bulletList;
     private EnemyFactory factory;
     private LinkedList<Enemy> enemyList;
+    private LinkedList<Bullet> enemyBullet;
     private int enemyCounter = 0;
     private int timer;
     private ExecutorService soundThreadPool = Executors.newCachedThreadPool();
@@ -39,6 +40,7 @@ public class Spaceship implements KeyboardHandler {
         factory = new EnemyFactory();
         sound = new SoundClass();
         score = new Score();
+        enemyBullet = new LinkedList<>();
     }
 
     public void init() {
@@ -52,7 +54,7 @@ public class Spaceship implements KeyboardHandler {
     //Methods
     public void shoot() {
         if (timer % 3 == 0) {
-            bulletList.add(new Bullet(spaceship.getMaxX(), middleY() - 3));
+            bulletList.add(new Bullet(spaceship.getMaxX(), middleY() - 3, "resources/bulletpink.png"));
             soundThreadPool.submit(sound);
             timer++;
         }
@@ -66,6 +68,25 @@ public class Spaceship implements KeyboardHandler {
                 bulletList.remove(bulletList.get(i));
             } else {
                 bulletList.get(i).moveBullet();
+            }
+        }
+    }
+
+    public void enemyShot(){
+        for (int i = 0; i < enemyList.size(); i++) {
+            if (enemyList.get(i) instanceof Boss) {
+                enemyBullet.add(new Bullet(enemyList.get(i).hitBox().getX() - (Background.CELLSIZE*4), middleY(), "resources/bulletyellow.png"));
+            }
+        }
+    }
+
+    public void moveEnemyBullets(){
+        for (int i = 0; i < enemyBullet.size(); i++) {
+            if(enemyBullet.get(i).getPos() > Background.PADDING){
+                enemyBullet.get(i).removeBullet();
+                enemyBullet.remove(enemyBullet.get(i));
+            } else {
+                enemyBullet.get(i).moveEnemyBullet();
             }
         }
     }
@@ -150,6 +171,9 @@ public class Spaceship implements KeyboardHandler {
             for (int j = 0; j < enemyList.size(); j++) {
                 System.out.println("bullet " + bulletList.size());
                 System.out.println(enemyList.size() + "enemy");
+                if( i >= bulletList.size()){
+                    continue;
+                }
                 if (bulletList.get(i).hitBox().getX() < enemyList.get(j).hitBox().getWidth() &&
                         bulletList.get(i).hitBox().getY() < enemyList.get(j).hitBox().getHeight() &&
                         enemyList.get(j).hitBox().getX() < bulletList.get(i).hitBox().getWidth() &&
@@ -189,7 +213,6 @@ public class Spaceship implements KeyboardHandler {
                 //shakeSpaceship();
                 if(health == 0){
                     //Canvas.snapshot();
-                    Canvas.pause();
                 }
                 System.out.println(health);
             }
@@ -290,5 +313,8 @@ public class Spaceship implements KeyboardHandler {
     public void keyReleased(KeyboardEvent keyboardEvent) {
         //maybe later
     }
+public void removeSpace(){
+        spaceship.delete();
 
+    }
 }

@@ -52,7 +52,7 @@ public class SoundClass implements LineListener, Runnable {
     }
 
     public static void play() {
-        String audioFilePath = "resources/shootsound.wav";
+        String audioFilePath = "resources/shoot.wav";
         SoundClass player = new SoundClass();
         player.play(audioFilePath);
     }

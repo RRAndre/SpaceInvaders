@@ -15,7 +15,7 @@ public class Main {
             SpaceImpactGame game;
 
             game = new SpaceImpactGame();
-            game.startMenu();
-            //game.startGame();
+            game.startGame();
+
     }
 }
